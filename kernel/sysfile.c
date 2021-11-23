@@ -484,3 +484,8 @@ sys_pipe(void)
   }
   return 0;
 }
+
+uint64
+sys_pingpang(void){
+  return 0;
+}

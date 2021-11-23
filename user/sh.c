@@ -55,7 +55,7 @@ struct cmd *parsecmd(char*);
 
 // Execute cmd.  Never returns.
 void
-runcmd(struct cmd *cmd)
+runcmd(struct cmd *cmd) // cmd是基类
 {
   int p[2];
   struct backcmd *bcmd;
@@ -72,7 +72,7 @@ runcmd(struct cmd *cmd)
     panic("runcmd");
 
   case EXEC:
-    ecmd = (struct execcmd*)cmd;
+    ecmd = (struct execcmd*)cmd;  // 向下类型转换
     if(ecmd->argv[0] == 0)
       exit(1);
     exec(ecmd->argv[0], ecmd->argv);
@@ -149,7 +149,7 @@ main(void)
 
   // Ensure that three file descriptors are open.
   while((fd = open("console", O_RDWR)) >= 0){
-    if(fd >= 3){
+    if(fd >= 3){  // 在控制台打开了0(标准输入)，1(标准输出)，2(错误处理)
       close(fd);
       break;
     }
@@ -164,7 +164,7 @@ main(void)
         fprintf(2, "cannot cd %s\n", buf+3);
       continue;
     }
-    if(fork1() == 0)
+    if(fork1() == 0)  // create a new process and switch to it
       runcmd(parsecmd(buf));
     wait(0);
   }
@@ -172,7 +172,7 @@ main(void)
 }
 
 void
-panic(char *s)
+panic(char *s)  // error process
 {
   fprintf(2, "%s\n", s);
   exit(1);
@@ -330,7 +330,7 @@ parsecmd(char *s)
   char *es;
   struct cmd *cmd;
 
-  es = s + strlen(s);
+  es = s + strlen(s); // 指向末尾
   cmd = parseline(&s, es);
   peek(&s, es, "");
   if(s != es){

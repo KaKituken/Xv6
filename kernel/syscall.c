@@ -106,6 +106,7 @@ extern uint64 sys_wait(void);
 extern uint64 sys_write(void);
 extern uint64 sys_uptime(void);
 extern uint64 sys_pingpang(void); // TODO: 两个进程之间 ping-pang
+extern uint64 sys_memtop(void);   // TODO: 返回剩余内存数量
 
 static uint64 (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -129,8 +130,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-// [SYS_count]   sys_count,  // new system call
 [SYS_pingpang] sys_pingpang,
+[SYS_memtop]  sys_memtop,
 };
 
 void

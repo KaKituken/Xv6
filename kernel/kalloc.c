@@ -70,7 +70,7 @@ kalloc(void)
 {
   struct run *r;
 
-  acquire(&kmem.lock);
+  acquire(&kmem.lock);  // ??? why ???
   r = kmem.freelist;
   if(r)
     kmem.freelist = r->next;
@@ -79,4 +79,37 @@ kalloc(void)
   if(r)
     memset((char*)r, 5, PGSIZE); // fill with junk
   return (void*)r;
+}
+
+int kcount(void)
+{
+  // struct  run *r;
+
+  int freenum = 0;
+  // r = kmem.freelist;
+  // while(r != 0){
+  //   r = r->next;
+  //   if(r)
+  //   freenum++;
+  // }
+  // return freenum;
+
+  char *p;
+  void *pa_start = end;
+  void *pa_end = (void*)PHYSTOP;
+  p = (char*)PGROUNDUP((uint64)pa_start);
+  for(; p + PGSIZE <= (char*)pa_end; p += PGSIZE){
+    int free = 1;
+    char *q = p;
+    {
+      for(; q < p + PGSIZE; q++){
+        if(*q != 0){
+          free = 0;
+          break;
+        }
+      }
+    }
+    if(free) freenum++;
+  }
+  return freenum * PGSIZE;
 }
